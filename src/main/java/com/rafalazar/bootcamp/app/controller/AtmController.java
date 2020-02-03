@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rafalazar.bootcamp.app.document.Atm;
+import com.rafalazar.bootcamp.app.dto.BankingDto;
+import com.rafalazar.bootcamp.app.dto.CreditDto;
 import com.rafalazar.bootcamp.app.service.AtmService;
 
 import reactor.core.publisher.Flux;
@@ -48,20 +50,72 @@ public class AtmController {
 	}
 	
 	// ACTUALIZAR UNA OPERACIÓN
-		@PutMapping("/update/{id}")
-		public Mono<ResponseEntity<Atm>> update(@PathVariable("id") String id, @RequestBody Atm atm) {
-			return service.update(atm, id)
-					.map(a -> ResponseEntity.created(URI.create("/atm/".concat(a.getId())))
-							.contentType(MediaType.APPLICATION_JSON).body(a))
-					.defaultIfEmpty(ResponseEntity.notFound().build());
-		}
+	@PutMapping("/update/{id}")
+	public Mono<ResponseEntity<Atm>> update(@PathVariable("id") String id, @RequestBody Atm atm) {
+		return service.update(atm, id)
+				.map(a -> ResponseEntity.created(URI.create("/atm/".concat(a.getId())))
+						.contentType(MediaType.APPLICATION_JSON).body(a))
+				.defaultIfEmpty(ResponseEntity.notFound().build());
+	}
 
-		// ELIMINAR UNA OPERACIÓN
-		@DeleteMapping("/delete/{id}")
-		public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
-			return service.findById(id).flatMap(a -> {
-				return service.delete(a).then(Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)));
-			}).defaultIfEmpty(new ResponseEntity<Void>(HttpStatus.NOT_FOUND));
-		}
-
+	// ELIMINAR UNA OPERACIÓN
+	@DeleteMapping("/delete/{id}")
+	public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
+		return service.findById(id).flatMap(a -> {
+			return service.delete(a).then(Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)));
+		}).defaultIfEmpty(new ResponseEntity<Void>(HttpStatus.NOT_FOUND));
+	}
+		
+	//------------------- Métodos Banking Client ------------------>
+	//--------------------------------------------------------------
+	@GetMapping("/findAllBankingClients")
+	public Flux<BankingDto> findAllBankingProducts(){
+		return service.findAllBankingProducts();
+	}
+	
+	@GetMapping("/findByBankingId/{id}")
+	public Mono<BankingDto> findByBankingId(@PathVariable("id") String id){
+		return service.findBankingById(id);
+	}
+	
+	@GetMapping("/findByNumAccountB/{numAccount}")
+	public Mono<BankingDto> findByNumAccountB(@PathVariable("numAccount") String numAccount){
+		return service.findByNumAccountB(numAccount);
+	}
+	
+	@PutMapping("/depositB/{amount}/{numAccount}")
+	public Mono<BankingDto> depositB(@PathVariable("amount") String amount, @PathVariable("numAccount") String numAccount){
+		return service.depositB(Double.parseDouble(amount), numAccount);
+	}
+	
+	@PutMapping("/retiroB/{amount}/{numAccount}")
+	public Mono<BankingDto> retiroB(@PathVariable("amount") String amount, @PathVariable("numAccount") String numAccount){
+		return service.retiroB(Double.parseDouble(amount), numAccount);
+	}
+	//------------------- Métodos Credit Client ------------------>
+	//--------------------------------------------------------------
+	@GetMapping("/findAllCreditClients")
+	public Flux<CreditDto> findAllCreditProducts(){
+		return service.findAllCreditProducts();
+	}
+	
+	@GetMapping("/findByCreditId/{id}")
+	public Mono<CreditDto> findByCreditId(@PathVariable("id") String id){
+		return service.findCreditById(id);
+	}
+	
+	@GetMapping("/findByNumAccountC/{numberAccount}")
+	public Mono<CreditDto> findByNumAccountC(@PathVariable("numberAccount") String numberAccount){
+		return service.findByNumAccountC(numberAccount);
+	}
+	
+	@PutMapping("/depositC/{amount}/{numberAccount}")
+	public Mono<CreditDto> depositC(@PathVariable("amount") String amount, @PathVariable("numberAccount") String numberAccount){
+		return service.depositC(Double.parseDouble(amount), numberAccount);
+	}
+	
+	@PutMapping("/retiroC/{amount}/{numberAccount}")
+	public Mono<CreditDto> retiroC(@PathVariable("amount") String amount, @PathVariable("numberAccount") String numberAccount){
+		return service.retiroC(Double.parseDouble(amount), numberAccount);
+	}
 }

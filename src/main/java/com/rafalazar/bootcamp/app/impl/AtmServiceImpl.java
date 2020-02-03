@@ -3,7 +3,11 @@ package com.rafalazar.bootcamp.app.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.rafalazar.bootcamp.app.client.BankingClient;
+import com.rafalazar.bootcamp.app.client.CreditClient;
 import com.rafalazar.bootcamp.app.document.Atm;
+import com.rafalazar.bootcamp.app.dto.BankingDto;
+import com.rafalazar.bootcamp.app.dto.CreditDto;
 import com.rafalazar.bootcamp.app.repository.AtmRepository;
 import com.rafalazar.bootcamp.app.service.AtmService;
 
@@ -15,6 +19,12 @@ public class AtmServiceImpl implements AtmService{
 	
 	@Autowired
 	private AtmRepository repo;
+	
+	@Autowired
+	private BankingClient bclient;
+	
+	@Autowired
+	private CreditClient cclient;
 
 	@Override
 	public Flux<Atm> findAll() {
@@ -57,6 +67,60 @@ public class AtmServiceImpl implements AtmService{
 	@Override
 	public Mono<Void> delete(Atm atm) {
 		return repo.delete(atm);
+	}
+
+	// ----------------- Banking Client ------------------------->
+	//--------------
+	@Override
+	public Flux<BankingDto> findAllBankingProducts() {
+		return bclient.findAllBankingProducts();
+	}
+
+	@Override
+	public Mono<BankingDto> findBankingById(String id) {
+		return bclient.findBankingById(id);
+	}
+
+	@Override
+	public Mono<BankingDto> findByNumAccountB(String numAccount) {
+		return bclient.findByNumAccountB(numAccount);
+	}
+
+	@Override
+	public Mono<BankingDto> depositB(Double amount, String numAccount) {
+		return bclient.depositB(amount, numAccount);
+	}
+
+	@Override
+	public Mono<BankingDto> retiroB(Double amount, String numAccount) {
+		return bclient.retiroB(amount, numAccount);
+	}
+
+	//------------------------ Credit Client ---------------------->
+	//-----------------------------
+	@Override
+	public Flux<CreditDto> findAllCreditProducts() {
+		return cclient.findAllCreditProducts();
+	}
+
+	@Override
+	public Mono<CreditDto> findCreditById(String id) {
+		return cclient.findCreditById(id);
+	}
+
+	@Override
+	public Mono<CreditDto> findByNumAccountC(String numberAccount) {
+		return cclient.findByNumAccountC(numberAccount);
+	}
+
+	@Override
+	public Mono<CreditDto> depositC(Double amount, String numberAccount) {
+		return cclient.depositC(amount, numberAccount);
+	}
+
+	@Override
+	public Mono<CreditDto> retiroC(Double amount, String numberAccount) {
+		return cclient.retiroC(amount, numberAccount);
 	}
 	
 }
