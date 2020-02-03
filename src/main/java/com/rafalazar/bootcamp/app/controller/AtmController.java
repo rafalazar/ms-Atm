@@ -65,6 +65,17 @@ public class AtmController {
 			return service.delete(a).then(Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT)));
 		}).defaultIfEmpty(new ResponseEntity<Void>(HttpStatus.NOT_FOUND));
 	}
+	
+	//REALIZAR UN DEPOSITO(PAGO) A UNA CUENTA CRÉDITO DESDE UNA CUENTA BANCARIA
+	@PutMapping("/depositCreditFromBanking/{amount}/{accountO}/{accountD}")
+	public Mono<Atm> depositCreditFromBanking(@PathVariable String amount, @PathVariable String accountO, @PathVariable String accountD){
+		return service.depositAccountBToAccountC(Double.parseDouble(amount), accountO, accountD);
+	}
+	
+	@PutMapping("/depositBankingFromCredit/{amount}/{accountO}/{accountD}")
+	public Mono<Atm> depositBankingFromCredit(@PathVariable String amount, @PathVariable String accountO, @PathVariable String accountD){
+		return service.retiroAccountCToAccountB(Double.parseDouble(amount), accountO, accountD);
+	}
 		
 	//------------------- Métodos Banking Client ------------------>
 	//--------------------------------------------------------------

@@ -20,6 +20,12 @@ public interface AtmService {
 	//Eliminar operación
 	public Mono<Void> delete(Atm atm);
 	
+	//------------------ Métodos Propios ------------------------>
+	//-----------------------------------------------------------
+	public Mono<Atm> depositAccountBToAccountC(Double amount, String accountO, String accountD);
+	
+	public Mono<Atm> retiroAccountCToAccountB(Double amount, String accountO, String accountD);
+	
 	//------------------ Métodos BankingClient -------
 	public Flux<BankingDto> findAllBankingProducts();
 	

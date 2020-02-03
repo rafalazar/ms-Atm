@@ -1,5 +1,7 @@
 package com.rafalazar.bootcamp.app.impl;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,11 @@ public class AtmServiceImpl implements AtmService{
 
 	@Override
 	public Mono<Atm> save(Atm atm) {
+		
+		if(atm.getOperationDate() == null) {
+			atm.setOperationDate(new Date());
+		}
+		
 		return repo.save(atm);
 	}
 
@@ -67,6 +74,37 @@ public class AtmServiceImpl implements AtmService{
 	@Override
 	public Mono<Void> delete(Atm atm) {
 		return repo.delete(atm);
+	}
+	
+	@Override
+	public Mono<Atm> depositAccountBToAccountC(Double amount, String accountO, String accountD) {
+		
+		bclient.retiroB(amount, accountO).subscribe();
+		cclient.depositC(amount, accountD).subscribe();
+		
+		Atm a = new Atm();
+		
+		a.setNumAccountO(accountO);
+		a.setNumAccountD(accountD);
+		a.setAmount(amount);
+		
+		return repo.save(a);
+	}
+
+	@Override
+	public Mono<Atm> retiroAccountCToAccountB(Double amount, String accountO, String accountD) {
+		
+		bclient.depositB(amount, accountD).subscribe();
+		cclient.retiroC(amount, accountO).subscribe();
+		
+		Atm a = new Atm();
+		
+		a.setNumAccountO(accountO);
+		a.setNumAccountD(accountD);
+		a.setAmount(amount);
+		
+		return repo.save(a);
+		
 	}
 
 	// ----------------- Banking Client ------------------------->
