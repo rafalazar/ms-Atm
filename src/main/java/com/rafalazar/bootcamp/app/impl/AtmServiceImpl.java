@@ -27,6 +27,8 @@ public class AtmServiceImpl implements AtmService{
 	
 	@Autowired
 	private CreditClient cclient;
+	
+	String nameOwnerO;
 
 	@Override
 	public Flux<Atm> findAll() {
