@@ -6,6 +6,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
@@ -14,10 +16,12 @@ public class Atm {
 	
 	@Id
 	private String id;
+	private String bankAtm;
+	private String operationType;
 	private String numAccountO;
 	private String numAccountD;
 	private Double amount;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date operationDate;
 
 }

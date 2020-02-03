@@ -33,6 +33,8 @@ public interface AtmService {
 	
 	public Mono<BankingDto> findByNumAccountB(String numAccount);
 	
+	public Mono<BankingDto> save(BankingDto banking);
+	
 	public Mono<BankingDto> depositB(Double amount, String numAccount);
 	
 	public Mono<BankingDto> retiroB(Double amount, String numAccount);
@@ -43,6 +45,8 @@ public interface AtmService {
 	public Mono<CreditDto> findCreditById(String id);
 	
 	public Mono<CreditDto> findByNumAccountC(String numberAccount);
+	
+	public Mono<CreditDto> save(CreditDto credit);
 	
 	public Mono<CreditDto> depositC(Double amount, String numberAccount);
 	

@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.rafalazar.bootcamp.app.dto.BankingDto;
 import com.rafalazar.bootcamp.app.dto.CreditDto;
 
 import reactor.core.publisher.Flux;
@@ -39,6 +41,16 @@ public class CreditClient {
 	public Mono<CreditDto> findByNumAccountC(String numberAccount){
 		return client.get()
 				.uri("/findByNumAccount/{numberAccount}",Collections.singletonMap("numberAccount", numberAccount))
+				.retrieve()
+				.bodyToMono(CreditDto.class);
+	}
+	
+	public Mono<CreditDto> save(CreditDto credit){
+		return client.post()
+				.uri("/create")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(BodyInserters.fromValue(credit))
 				.retrieve()
 				.bodyToMono(CreditDto.class);
 	}

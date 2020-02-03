@@ -43,6 +43,8 @@ public class AtmServiceImpl implements AtmService{
 		
 		if(atm.getOperationDate() == null) {
 			atm.setOperationDate(new Date());
+		}else {
+			atm.setOperationDate(atm.getOperationDate());
 		}
 		
 		return repo.save(atm);
@@ -84,11 +86,15 @@ public class AtmServiceImpl implements AtmService{
 		
 		Atm a = new Atm();
 		
+		a.setOperationType("Depósito de Cuenta Bancaria a Cuenta de Crédito");
 		a.setNumAccountO(accountO);
 		a.setNumAccountD(accountD);
 		a.setAmount(amount);
+		a.setOperationDate(new Date());
 		
 		return repo.save(a);
+		
+		
 	}
 
 	@Override
@@ -123,6 +129,11 @@ public class AtmServiceImpl implements AtmService{
 	public Mono<BankingDto> findByNumAccountB(String numAccount) {
 		return bclient.findByNumAccountB(numAccount);
 	}
+	
+	@Override
+	public Mono<BankingDto> save(BankingDto banking) {
+		return bclient.save(banking);
+	}
 
 	@Override
 	public Mono<BankingDto> depositB(Double amount, String numAccount) {
@@ -149,6 +160,11 @@ public class AtmServiceImpl implements AtmService{
 	@Override
 	public Mono<CreditDto> findByNumAccountC(String numberAccount) {
 		return cclient.findByNumAccountC(numberAccount);
+	}
+	
+	@Override
+	public Mono<CreditDto> save(CreditDto credit) {
+		return cclient.save(credit);
 	}
 
 	@Override

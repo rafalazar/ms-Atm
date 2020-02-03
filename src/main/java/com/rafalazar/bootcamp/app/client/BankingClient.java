@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.rafalazar.bootcamp.app.dto.BankingDto;
@@ -39,6 +40,16 @@ public class BankingClient {
 	public Mono<BankingDto> findByNumAccountB(String numAccount){
 		return client.get()
 				.uri("/findByNumAccount/{numAccount}",Collections.singletonMap("numAccount", numAccount))
+				.retrieve()
+				.bodyToMono(BankingDto.class);
+	}
+	
+	public Mono<BankingDto> save(BankingDto banking){
+		return client.post()
+				.uri("/create")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(BodyInserters.fromValue(banking))
 				.retrieve()
 				.bodyToMono(BankingDto.class);
 	}
