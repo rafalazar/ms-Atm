@@ -2,6 +2,8 @@ package com.rafalazar.bootcamp.app.impl;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class AtmServiceImpl implements AtmService{
+	
+	private static final Logger log = LoggerFactory.getLogger(AtmServiceImpl.class);
 	
 	@Autowired
 	private AtmRepository repo;
@@ -83,19 +87,32 @@ public class AtmServiceImpl implements AtmService{
 	@Override
 	public Mono<Atm> depositAccountBToAccountC(Double amount, String accountO, String accountD) {
 		
+		Atm a = new Atm();
+		
 		bclient.retiroB(amount, accountO).subscribe();
 		cclient.depositC(amount, accountD).subscribe();
 		
-		Atm a = new Atm();
-		
-		a.setOperationType("Depósito de Cuenta Bancaria a Cuenta de Crédito");
+		a.setOperationType("DEPÓSITO - Cuenta Bancaria a Cuenta de Crédito");
 		a.setNumAccountO(accountO);
 		a.setNumAccountD(accountD);
 		a.setAmount(amount);
 		a.setOperationDate(new Date());
 		
-		return repo.save(a);
+		bclient.findByNumAccountB(accountO)
+		.map(b -> {
+			a.setNameAccountO(b.getNameOwner());;
+			repo.save(a).subscribe();
+			return b;
+		}).subscribe();
 		
+		cclient.findByNumAccountC(accountD)
+		.map(c -> {
+			a.setNameAccountD(c.getNameOwner());
+			repo.save(a).subscribe();
+			return c;
+		}).subscribe();
+		
+		return repo.save(a);
 		
 	}
 
@@ -139,6 +156,20 @@ public class AtmServiceImpl implements AtmService{
 
 	@Override
 	public Mono<BankingDto> depositB(Double amount, String numAccount) {
+		
+		Atm a = new Atm();
+		bclient.findByNumAccountB(numAccount)
+			.map(b -> {
+				a.setOperationType("Depósito - Cuenta Bancaria");
+				a.setNameAccountD(b.getNameOwner());
+				a.setNumAccountD(numAccount);
+				a.setAmount(amount);
+				a.setOperationDate(new Date());
+				repo.save(a).subscribe();
+				
+				return b;
+			}).subscribe();
+		
 		return bclient.depositB(amount, numAccount);
 	}
 

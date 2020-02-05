@@ -18,7 +18,9 @@ public class Atm {
 	private String id;
 	private String bankAtm;
 	private String operationType;
+	private String nameAccountO;
 	private String numAccountO;
+	private String nameAccountD;
 	private String numAccountD;
 	private Double amount;
 	@JsonFormat(pattern = "yyyy-MM-dd")
