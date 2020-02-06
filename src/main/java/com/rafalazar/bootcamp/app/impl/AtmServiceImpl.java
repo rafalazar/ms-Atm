@@ -60,7 +60,6 @@ public class AtmServiceImpl implements AtmService{
 	public Mono<Atm> update(Atm atm, String id) {
 		return repo.findById(id)
 				.flatMap(a -> {
-					
 					//Cuenta origen
 					a.setNumAccountO(atm.getNumAccountO());
 					//Cuenta destino
