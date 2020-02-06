@@ -1,4 +1,4 @@
-package com.rafalazar.bootcamp.app.impl;
+package com.rafalazar.bootcamp.app.service;
 
 import java.util.Date;
 
@@ -88,8 +88,8 @@ public class AtmServiceImpl implements AtmService{
 		
 		Atm a = new Atm();
 		
-		bclient.retiroB(amount, accountO).subscribe();
 		cclient.depositC(amount, accountD).subscribe();
+		bclient.retiroB(amount, accountO).subscribe();
 		
 		a.setOperationType("DEPÓSITO - Cuenta Bancaria a Cuenta de Crédito");
 		a.setNumAccountO(accountO);
@@ -155,19 +155,6 @@ public class AtmServiceImpl implements AtmService{
 
 	@Override
 	public Mono<BankingDto> depositB(Double amount, String numAccount) {
-		
-		Atm a = new Atm();
-		bclient.findByNumAccountB(numAccount)
-			.map(b -> {
-				a.setOperationType("Depósito - Cuenta Bancaria");
-				a.setNameAccountD(b.getNameOwner());
-				a.setNumAccountD(numAccount);
-				a.setAmount(amount);
-				a.setOperationDate(new Date());
-				repo.save(a).subscribe();
-				
-				return b;
-			}).subscribe();
 		
 		return bclient.depositB(amount, numAccount);
 	}
